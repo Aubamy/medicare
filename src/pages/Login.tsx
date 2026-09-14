@@ -1,9 +1,13 @@
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { HeartPulse, Loader2 } from "lucide-react";
+import {
+  HeartPulse,
+  Loader2,
+  ArrowLeft,
+} from "lucide-react";
 import { useAuth } from "../context/AuthContext";
-
-const API_URL = "http://localhost:3000/api/auth/login";
+import api from "../api/axios";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -32,39 +36,38 @@ const Login = () => {
     e.preventDefault();
 
     setError("");
+    setLoading(true);
 
     try {
-      setLoading(true);
+      const response = await api.post("/auth/login", formData);
 
-      const response = await fetch(API_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const { token } = response.data;
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(
-          data.message || "Login failed"
-        );
+      if (!token) {
+        throw new Error("Login token was not returned");
       }
 
- const success = await login(data.token);
+      const success = await login(token);
 
-if (success) {
-  navigate("/");
-} else {
-  setError("Failed to load user profile");
-}
-    } catch (error) {
-      setError(
-        error instanceof Error
-          ? error.message
-          : "Something went wrong"
-      );
+      if (success) {
+        navigate("/");
+      } else {
+        setError("Failed to load user profile");
+      }
+    } catch (error: any) {
+      if (error.response?.data?.message) {
+        const message = error.response.data.message;
+
+        setError(
+          Array.isArray(message)
+            ? message.join(", ")
+            : message
+        );
+      } else {
+        setError(
+          error.message || "Something went wrong"
+        );
+      }
     } finally {
       setLoading(false);
     }
@@ -72,7 +75,6 @@ if (success) {
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-
       <div className="w-full max-w-md">
 
         {/* Logo */}
@@ -91,6 +93,15 @@ if (success) {
 
         {/* Login Card */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8">
+
+          {/* Back to Home */}
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-green-600 transition mb-5"
+          >
+            <ArrowLeft size={18} />
+            Back to Home
+          </Link>
 
           <h2 className="text-2xl font-bold text-gray-800 text-center">
             Welcome Back

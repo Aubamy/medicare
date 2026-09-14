@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 
 import {
@@ -23,7 +24,6 @@ const Navbar = () => {
 
   const { totalItems } = useCart();
 
-  // Wishlist
   const { wishlist } = useWishlist();
 
   const navigate = useNavigate();
@@ -72,7 +72,6 @@ const Navbar = () => {
             </h1>
           </Link>
 
-
           {/* Desktop Menu */}
           <div className="hidden lg:flex items-center gap-8">
 
@@ -113,7 +112,6 @@ const Navbar = () => {
 
           </div>
 
-
           {/* Desktop Actions */}
           <div className="hidden lg:flex items-center gap-5">
 
@@ -125,7 +123,6 @@ const Navbar = () => {
             >
               <Search size={21} />
             </Link>
-
 
             {/* Wishlist */}
             <Link
@@ -142,7 +139,6 @@ const Navbar = () => {
               )}
             </Link>
 
-
             {/* Cart */}
             <Link
               to="/cart"
@@ -158,26 +154,26 @@ const Navbar = () => {
               )}
             </Link>
 
-
             {/* Authentication */}
             {!loading && (
               isAuthenticated ? (
                 <div className="flex items-center gap-3">
 
-                 <Link
-                      to="/profile"
-                      className="text-green-600 hover:text-green-700 font-medium transition">
-                      Hi, {user?.fullName}
-                </Link>
+                  <Link
+                    to="/profile"
+                    className="text-green-600 hover:text-green-700 font-medium transition"
+                  >
+                    Hi, {user?.fullName}
+                  </Link>
 
                   {user?.role === "admin" && (
-                <button
-                    onClick={() => navigate("/admin/dashboard")}
-                    className="bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-lg transition" >
-                    Dashboard
-                  </button>
-                )}
-
+                    <button
+                      onClick={() => navigate("/admin/dashboard")}
+                      className="bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-lg transition"
+                    >
+                      Dashboard
+                    </button>
+                  )}
 
                   <button
                     onClick={handleLogout}
@@ -188,17 +184,29 @@ const Navbar = () => {
 
                 </div>
               ) : (
-                <button
-                  onClick={() => navigate("/login")}
-                  className="bg-green-600 hover:bg-green-700 text-white px-5 py-2.5 rounded-lg transition"
-                >
-                  Login
-                </button>
+                <div className="flex items-center gap-3">
+
+                  {/* Login */}
+                  <button
+                    onClick={() => navigate("/login")}
+                    className="border border-green-600 text-green-600 hover:bg-green-50 px-4 py-2 rounded-lg transition font-medium"
+                  >
+                    Login
+                  </button>
+
+                  {/* Create Account */}
+                  <button
+                    onClick={() => navigate("/register")}
+                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition font-medium"
+                  >
+                    Create Account
+                  </button>
+
+                </div>
               )
             )}
 
           </div>
-
 
           {/* Mobile / Tablet Actions */}
           <div className="flex lg:hidden items-center gap-3">
@@ -218,7 +226,6 @@ const Navbar = () => {
               )}
             </Link>
 
-
             {/* Cart */}
             <Link
               to="/cart"
@@ -233,7 +240,6 @@ const Navbar = () => {
                 </span>
               )}
             </Link>
-
 
             {/* Menu Button */}
             <button
@@ -254,10 +260,8 @@ const Navbar = () => {
 
       </div>
 
-
       {/* Mobile Menu */}
       {isOpen && (
-
         <div className="lg:hidden bg-white border-t border-gray-100 shadow-lg w-full">
 
           <div className="px-4 sm:px-6 py-6">
@@ -273,7 +277,6 @@ const Navbar = () => {
                 Home
               </Link>
 
-
               <Link
                 to="/products"
                 onClick={closeMenu}
@@ -281,7 +284,6 @@ const Navbar = () => {
               >
                 Products
               </Link>
-
 
               <Link
                 to="/#categories"
@@ -291,7 +293,6 @@ const Navbar = () => {
                 Categories
               </Link>
 
-
               <Link
                 to="/about"
                 onClick={closeMenu}
@@ -300,7 +301,6 @@ const Navbar = () => {
                 About Us
               </Link>
 
-
               <Link
                 to="/contact"
                 onClick={closeMenu}
@@ -308,7 +308,6 @@ const Navbar = () => {
               >
                 Contact
               </Link>
-
 
               {/* Wishlist */}
               <Link
@@ -326,7 +325,6 @@ const Navbar = () => {
               </Link>
 
             </div>
-
 
             {/* Mobile Actions */}
             <div className="mt-6">
@@ -355,17 +353,16 @@ const Navbar = () => {
                     </Link>
 
                     {user?.role === "admin" && (
-                  <button
-                    onClick={() => {
-                      closeMenu();
-                      navigate("/admin/dashboard");
-                    }}
-                    className="w-full bg-gray-900 hover:bg-gray-800 text-white py-3 rounded-xl font-medium transition"
-                  >
-                    Admin Dashboard
-                  </button>
-                )}
-
+                      <button
+                        onClick={() => {
+                          closeMenu();
+                          navigate("/admin/dashboard");
+                        }}
+                        className="w-full bg-gray-900 hover:bg-gray-800 text-white py-3 rounded-xl font-medium transition"
+                      >
+                        Admin Dashboard
+                      </button>
+                    )}
 
                     <button
                       onClick={handleLogout}
@@ -390,7 +387,6 @@ const Navbar = () => {
                       Login
                     </button>
 
-
                     <button
                       onClick={() => {
                         closeMenu();
@@ -411,7 +407,6 @@ const Navbar = () => {
           </div>
 
         </div>
-
       )}
 
     </nav>

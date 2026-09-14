@@ -3,10 +3,12 @@ import {
   ShoppingCart,
   Star,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 import { useCart } from "../context/cartContext";
 import { useWishlist } from "../context/WishlishContext";
+import { useAuth } from "../context/AuthContext";
 
 import type { Product } from "../types/product";
 
@@ -15,14 +17,40 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ product }: ProductCardProps) => {
-  const { addToCart } = useCart();
+  const { addToCart, loading } = useCart();
 
   const {
     toggleWishlist,
     isInWishlist,
   } = useWishlist();
 
+  const { isAuthenticated } = useAuth();
+
+  const navigate = useNavigate();
+
+  const [added, setAdded] = useState(false);
+
   const liked = isInWishlist(product.id);
+
+  const handleAddToCart = async () => {
+    if (!isAuthenticated) {
+      navigate("/login");
+      return;
+    }
+
+    try {
+      await addToCart(product);
+
+      setAdded(true);
+
+      setTimeout(() => {
+        setAdded(false);
+      }, 2000);
+    } catch (error) {
+      console.error("Add to cart failed:", error);
+      alert("Failed to add product to cart. Please try again.");
+    }
+  };
 
   return (
     <div className="group bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition duration-300">
@@ -100,14 +128,34 @@ const ProductCard = ({ product }: ProductCardProps) => {
           </p>
 
           <button
-            onClick={() => addToCart(product)}
-            className="bg-green-600 hover:bg-green-700 text-white p-3 rounded-xl transition"
-            title="Add to cart"
+            onClick={handleAddToCart}
+            disabled={loading}
+            className={`text-white p-3 rounded-xl transition ${
+              added
+                ? "bg-green-800"
+                : "bg-green-600 hover:bg-green-700"
+            } ${
+              loading
+                ? "opacity-50 cursor-not-allowed"
+                : ""
+            }`}
+            title={
+              added
+                ? "Added to cart"
+                : "Add to cart"
+            }
           >
             <ShoppingCart size={20} />
           </button>
 
         </div>
+
+        {/* Success message */}
+        {added && (
+          <p className="text-green-600 text-sm font-medium mt-3 text-center">
+            ✓ Added to cart
+          </p>
+        )}
 
       </div>
     </div>

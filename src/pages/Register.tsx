@@ -1,8 +1,12 @@
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { HeartPulse, Loader2 } from "lucide-react";
-
-const API_URL = "http://localhost:3000/api/auth/register";
+import {
+  HeartPulse,
+  Loader2,
+  ArrowLeft,
+} from "lucide-react";
+import api from "../api/axios";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -44,42 +48,42 @@ const Register = () => {
     try {
       setLoading(true);
 
-      const response = await fetch(API_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+      const response = await api.post("/auth/register", {
+        fullName: formData.fullName,
+        email: formData.email,
+        phone: formData.phone,
+        password: formData.password,
       });
 
-      const data = await response.json();
+      if (response.data) {
+        setSuccess("Account created successfully!");
 
-      if (!response.ok) {
-        throw new Error(
-          data.message || "Registration failed"
+        setFormData({
+          fullName: "",
+          email: "",
+          phone: "",
+          password: "",
+          confirmPassword: "",
+        });
+
+        setTimeout(() => {
+          navigate("/login");
+        }, 1500);
+      }
+    } catch (error: any) {
+      if (error.response?.data?.message) {
+        const message = error.response.data.message;
+
+        setError(
+          Array.isArray(message)
+            ? message.join(", ")
+            : message
+        );
+      } else {
+        setError(
+          error.message || "Something went wrong"
         );
       }
-
-      setSuccess("Account created successfully!");
-
-      setFormData({
-        fullName: "",
-        email: "",
-        phone: "",
-        password: "",
-        confirmPassword: "",
-      });
-
-      setTimeout(() => {
-        navigate("/login");
-      }, 1500);
-
-    } catch (error) {
-      setError(
-        error instanceof Error
-          ? error.message
-          : "Something went wrong"
-      );
     } finally {
       setLoading(false);
     }
@@ -87,7 +91,6 @@ const Register = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-10">
-
       <div className="w-full max-w-md">
 
         {/* Logo */}
@@ -106,6 +109,15 @@ const Register = () => {
 
         {/* Card */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8">
+
+          {/* Back to Home */}
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-green-600 transition mb-5"
+          >
+            <ArrowLeft size={18} />
+            Back to Home
+          </Link>
 
           <h2 className="text-2xl font-bold text-gray-800 text-center">
             Create an Account

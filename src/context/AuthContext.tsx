@@ -1,4 +1,3 @@
-
 import {
   createContext,
   useContext,
@@ -6,6 +5,8 @@ import {
   useState,
   type ReactNode,
 } from "react";
+
+import api from "../api/axios";
 
 interface User {
   id: number;
@@ -25,8 +26,6 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const API_URL = "http://localhost:3000/api";
-
 export const AuthProvider = ({
   children,
 }: {
@@ -35,21 +34,16 @@ export const AuthProvider = ({
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Get the real logged-in user from the backend
+  // Get logged-in user from backend
   const fetchProfile = async (token: string) => {
     try {
-      const response = await fetch(`${API_URL}/auth/profile`, {
-        method: "GET",
+      const response = await api.get("/auth/profile", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to load profile");
-      }
-
-      const data = await response.json();
+      const data = response.data;
 
       const loggedInUser = data.user || data;
 
@@ -74,7 +68,7 @@ export const AuthProvider = ({
     }
   };
 
-  // Check if a user was previously logged in
+  // Check previously logged-in user
   useEffect(() => {
     const token = localStorage.getItem("medicare-token");
 
@@ -101,12 +95,15 @@ export const AuthProvider = ({
 
     try {
       if (token) {
-        await fetch(`${API_URL}/auth/logout`, {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        await api.post(
+          "/auth/logout",
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
       }
     } catch (error) {
       console.error("Logout error:", error);
@@ -143,4 +140,3 @@ export const useAuth = () => {
 
   return context;
 };
-

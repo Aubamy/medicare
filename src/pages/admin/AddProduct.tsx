@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Loader2, Upload } from "lucide-react";
 
-const API_URL = "http://localhost:3000/api";
+import api from "../../api/axios";
 
 const AddProduct = () => {
   const navigate = useNavigate();
@@ -25,17 +25,19 @@ const AddProduct = () => {
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => {
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [e.target.name]: e.target.value,
-    });
+    }));
   };
 
   const handleImageChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
-    if (e.target.files && e.target.files[0]) {
-      setImage(e.target.files[0]);
+    const file = e.target.files?.[0];
+
+    if (file) {
+      setImage(file);
     }
   };
 
@@ -47,47 +49,49 @@ const AddProduct = () => {
     setError("");
     setSuccess("");
 
+    // Validate image
     if (!image) {
       setError("Please select a product image.");
+      return;
+    }
+
+    // Validate price
+    const price = Number(formData.price);
+
+    if (Number.isNaN(price) || price < 0) {
+      setError("Price must be a valid number greater than or equal to 0.");
+      return;
+    }
+
+    // Validate quantity
+    const quantity = Number(formData.quantity);
+
+    if (
+      Number.isNaN(quantity) ||
+      quantity < 0 ||
+      !Number.isInteger(quantity)
+    ) {
+      setError(
+        "Quantity must be a whole number greater than or equal to 0."
+      );
       return;
     }
 
     try {
       setLoading(true);
 
-      const token = localStorage.getItem("medicare-token");
-
-      if (!token) {
-        throw new Error("You are not logged in.");
-      }
-
       const data = new FormData();
 
-      data.append("productName", formData.productName);
-      data.append("description", formData.description);
-      data.append("price", formData.price);
-      data.append("quantity", formData.quantity);
-      data.append("category", formData.category);
+      data.append("productName", formData.productName.trim());
+      data.append("description", formData.description.trim());
+      data.append("price", String(price));
+      data.append("quantity", String(quantity));
+      data.append("category", formData.category.trim());
+
+      // Image is uploaded separately through @UploadedFile()
       data.append("image", image);
 
-      const response = await fetch(
-        `${API_URL}/add-products`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          body: data,
-        }
-      );
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(
-          result.message || "Failed to add product"
-        );
-      }
+      await api.post("/add-products", data);
 
       setSuccess("Product added successfully!");
 
@@ -112,12 +116,17 @@ const AddProduct = () => {
       setTimeout(() => {
         navigate("/admin/products");
       }, 1000);
-    } catch (error) {
-      setError(
-        error instanceof Error
-          ? error.message
-          : "Something went wrong"
-      );
+    } catch (error: any) {
+      const message = error?.response?.data?.message;
+
+      if (Array.isArray(message)) {
+        setError(message.join(", "));
+      } else {
+        setError(
+          message ||
+            "Failed to add product. Please try again."
+        );
+      }
     } finally {
       setLoading(false);
     }
@@ -203,6 +212,7 @@ const AddProduct = () => {
           {/* Price + Quantity */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
+            {/* Price */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
                 Price (₦)
@@ -215,11 +225,13 @@ const AddProduct = () => {
                 onChange={handleChange}
                 placeholder="Enter price"
                 min="0"
+                step="0.01"
                 required
                 className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-500"
               />
             </div>
 
+            {/* Quantity */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
                 Quantity
@@ -232,6 +244,7 @@ const AddProduct = () => {
                 onChange={handleChange}
                 placeholder="Enter quantity"
                 min="0"
+                step="1"
                 required
                 className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-500"
               />

@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import {
   ShoppingBag,
@@ -8,6 +7,8 @@ import {
 } from "lucide-react";
 
 import { useNavigate } from "react-router-dom";
+
+import api from "../../api/axios";
 
 interface OrderItem {
   id: number;
@@ -41,8 +42,6 @@ interface Order {
   items: OrderItem[];
 }
 
-const API_URL = "http://localhost:3000/api";
-
 const AdminOrders = () => {
   const navigate = useNavigate();
 
@@ -55,35 +54,13 @@ const AdminOrders = () => {
       setLoading(true);
       setError("");
 
-      const token = localStorage.getItem("medicare-token");
+      const response = await api.get("/admin/orders");
 
-      if (!token) {
-        throw new Error("You are not logged in.");
-      }
-
-      const response = await fetch(
-        `${API_URL}/admin/orders`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(
-          data.message || "Failed to load orders"
-        );
-      }
-
-      setOrders(data);
-    } catch (error) {
+      setOrders(response.data);
+    } catch (error: any) {
       setError(
-        error instanceof Error
-          ? error.message
-          : "Something went wrong"
+        error?.response?.data?.message ||
+          "Failed to load orders"
       );
     } finally {
       setLoading(false);
@@ -123,33 +100,9 @@ const AdminOrders = () => {
     try {
       setError("");
 
-      const token = localStorage.getItem("medicare-token");
-
-      if (!token) {
-        throw new Error("You are not logged in.");
-      }
-
-      const response = await fetch(
-        `${API_URL}/admin/orders/${id}/status`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            status,
-          }),
-        }
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(
-          data.message || "Failed to update order status"
-        );
-      }
+      await api.put(`/admin/orders/${id}/status`, {
+        status,
+      });
 
       setOrders((previousOrders) =>
         previousOrders.map((order) =>
@@ -161,11 +114,10 @@ const AdminOrders = () => {
             : order
         )
       );
-    } catch (error) {
+    } catch (error: any) {
       setError(
-        error instanceof Error
-          ? error.message
-          : "Something went wrong"
+        error?.response?.data?.message ||
+          "Failed to update order status"
       );
     }
   };
@@ -188,9 +140,13 @@ const AdminOrders = () => {
 
         <button
           onClick={fetchOrders}
-          className="flex items-center justify-center gap-2 border border-gray-200 hover:bg-gray-50 px-4 py-3 rounded-xl font-semibold transition"
+          disabled={loading}
+          className="flex items-center justify-center gap-2 border border-gray-200 hover:bg-gray-50 disabled:opacity-50 px-4 py-3 rounded-xl font-semibold transition"
         >
-          <RefreshCw size={19} />
+          <RefreshCw
+            size={19}
+            className={loading ? "animate-spin" : ""}
+          />
           Refresh
         </button>
 
@@ -345,13 +301,17 @@ const AdminOrders = () => {
                                 className="flex items-center gap-2"
                               >
 
-                                <img
-                                  src={item.product?.image}
-                                  alt={
-                                    item.product?.productName
-                                  }
-                                  className="w-8 h-8 rounded object-cover"
-                                />
+                                {item.product?.image ? (
+                                  <img
+                                    src={item.product.image}
+                                    alt={
+                                      item.product.productName
+                                    }
+                                    className="w-8 h-8 rounded object-cover"
+                                  />
+                                ) : (
+                                  <div className="w-8 h-8 rounded bg-gray-100" />
+                                )}
 
                                 <span className="text-sm text-gray-700">
                                   {item.product?.productName ||
@@ -409,6 +369,10 @@ const AdminOrders = () => {
                           Pending
                         </option>
 
+                        <option value="paid">
+                          Paid
+                        </option>
+
                         <option value="processing">
                           Processing
                         </option>
@@ -424,6 +388,7 @@ const AdminOrders = () => {
                         <option value="cancelled">
                           Cancelled
                         </option>
+
                       </select>
 
                     </td>
@@ -456,4 +421,3 @@ const AdminOrders = () => {
 };
 
 export default AdminOrders;
-

@@ -46,14 +46,17 @@ const AdminLayout = () => {
       path: "/admin/testimonials",
       icon: MessageSquare,
     },
+    {
+      name: "Messages",
+      path: "/admin/messages",
+      icon: MessageSquare,
+    },
   ];
 
   return (
     <div className="min-h-screen bg-gray-100 flex">
-
       {/* Sidebar */}
       <aside className="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col">
-
         {/* Logo */}
         <div className="h-20 flex items-center px-6 border-b border-gray-100">
           <div className="bg-green-600 text-white p-2 rounded-lg">
@@ -91,7 +94,6 @@ const AdminLayout = () => {
 
         {/* Admin Info + Logout */}
         <div className="border-t border-gray-100 p-4">
-
           <div className="px-3 mb-4">
             <p className="text-sm font-semibold text-gray-800">
               {user?.fullName}
@@ -118,7 +120,6 @@ const AdminLayout = () => {
 
       {/* Main Content */}
       <div className="flex-1 min-w-0">
-
         {/* Mobile Header */}
         <header className="md:hidden bg-white border-b border-gray-200 px-5 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -142,7 +143,6 @@ const AdminLayout = () => {
         <main>
           <Outlet />
         </main>
-
       </div>
     </div>
   );

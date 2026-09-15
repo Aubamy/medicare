@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import {
   Users,
@@ -8,6 +7,8 @@ import {
   Phone,
 } from "lucide-react";
 
+import api from "../../api/axios";
+
 interface Customer {
   id: number;
   fullName: string;
@@ -16,8 +17,6 @@ interface Customer {
   role: string;
   createdAt: string;
 }
-
-const API_URL = "http://localhost:3000/api";
 
 const AdminCustomers = () => {
   const [customers, setCustomers] = useState<Customer[]>([]);
@@ -29,35 +28,13 @@ const AdminCustomers = () => {
       setLoading(true);
       setError("");
 
-      const token = localStorage.getItem("medicare-token");
+      const response = await api.get("/admin/users");
 
-      if (!token) {
-        throw new Error("You are not logged in.");
-      }
-
-      const response = await fetch(
-        `${API_URL}/admin/users`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(
-          data.message || "Failed to load customers"
-        );
-      }
-
-      setCustomers(data);
-    } catch (error) {
+      setCustomers(response.data);
+    } catch (error: any) {
       setError(
-        error instanceof Error
-          ? error.message
-          : "Something went wrong"
+        error?.response?.data?.message ||
+          "Failed to load customers"
       );
     } finally {
       setLoading(false);
@@ -86,9 +63,13 @@ const AdminCustomers = () => {
 
         <button
           onClick={fetchCustomers}
-          className="flex items-center justify-center gap-2 border border-gray-200 hover:bg-gray-50 px-4 py-3 rounded-xl font-semibold transition"
+          disabled={loading}
+          className="flex items-center justify-center gap-2 border border-gray-200 hover:bg-gray-50 disabled:opacity-50 px-4 py-3 rounded-xl font-semibold transition"
         >
-          <RefreshCw size={19} />
+          <RefreshCw
+            size={19}
+            className={loading ? "animate-spin" : ""}
+          />
           Refresh
         </button>
 

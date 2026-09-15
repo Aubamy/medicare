@@ -1,3 +1,4 @@
+
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Products from "./pages/Products";
@@ -13,7 +14,8 @@ import Categories from "./pages/Categories";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
-import WriteTestimonial from "./pages/WriteTestimonial"
+import WriteTestimonial from "./pages/WriteTestimonial";
+import PaymentCallback from "./pages/PaymentCallback";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminLayout from "./components/admin/adminLayout";
 import AdminProducts from "./pages/admin/AdminProducts";
@@ -23,6 +25,7 @@ import AdminOrders from "./pages/admin/AdminOrders";
 import OrderDetails from "./pages/admin/OrderDetails";
 import AdminCustomers from "./pages/admin/AdminCustomers";
 import AdminTestimonials from "./pages/admin/AdminTestimonials";
+import AdminMessages from "./pages/admin/AdminMessages";
 
 function App() {
   return (
@@ -42,19 +45,41 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/testimonial" element={<WriteTestimonial />} />
+        <Route path="/payment/callback" element={<PaymentCallback />}/>
+
 
         {/* Admin */}
         <Route path="/admin" element={<AdminLayout />}>
           <Route path="dashboard" element={<AdminDashboard />} />
-          <Route path="products" element={<AdminProducts />} />
-          <Route path="products/add" element={<AddProduct />} />
-          <Route path="products/edit/:id" element={<EditProduct />}/>
-          <Route path="orders" element={<AdminOrders />} />
-          <Route path="/admin/orders/:id" element={<OrderDetails />}/>
-          <Route path="/admin/users" element={<AdminCustomers />}/>
-          <Route path="/admin/testimonials" element={<AdminTestimonials />}/>
-      </Route>
 
+          <Route path="products" element={<AdminProducts />} />
+
+          <Route path="products/add" element={<AddProduct />} />
+
+          <Route
+            path="products/edit/:id"
+            element={<EditProduct />}
+          />
+
+          <Route path="orders" element={<AdminOrders />} />
+
+          <Route
+            path="orders/:id"
+            element={<OrderDetails />}
+          />
+
+          <Route path="users" element={<AdminCustomers />} />
+
+          <Route
+            path="testimonials"
+            element={<AdminTestimonials />}
+          />
+
+          <Route
+            path="messages"
+            element={<AdminMessages />}
+          />
+        </Route>
 
         <Route path="*" element={<NotFound />} />
       </Routes>

@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link,} from "react-router-dom";
 import { ArrowLeft, ShoppingBag, Loader2 } from "lucide-react";
 import { useCart } from "../context/cartContext";
 import api from "../api/axios";
 
 const Checkout = () => {
 const { cart, totalPrice } = useCart();
-const navigate = useNavigate();
+
 
 const [formData, setFormData] = useState({
 name: "",

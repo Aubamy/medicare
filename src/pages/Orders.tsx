@@ -37,7 +37,7 @@ interface Order {
   items: OrderItem[];
 }
 
-const API_URL = "http://localhost:3000/api";
+const API_URL = "https://medi-care-api-yyxr.onrender.com/api";
 
 const Orders = () => {
   const [orders, setOrders] = useState<Order[]>([]);

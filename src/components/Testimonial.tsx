@@ -10,7 +10,7 @@ interface Testimonial {
   createdAt: string;
 }
 
-const API_URL = "http://localhost:3000/api";
+const API_URL = "https://medi-care-api-yyxr.onrender.com/api";
 
 const Testimonial = () => {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);

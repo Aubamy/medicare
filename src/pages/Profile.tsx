@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import {
   User,
@@ -10,6 +9,8 @@ import {
   Save,
   X,
   Loader2,
+  Lock,
+  KeyRound,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
@@ -19,9 +20,15 @@ const Profile = () => {
   const { user, updateUser } = useAuth();
 
   const [isEditing, setIsEditing] = useState(false);
+
   const [loading, setLoading] = useState(false);
+  const [passwordLoading, setPasswordLoading] = useState(false);
+
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+
+  const [passwordMessage, setPasswordMessage] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
   const [formData, setFormData] = useState({
     fullName: user?.fullName || "",
@@ -29,11 +36,26 @@ const Profile = () => {
     phone: user?.phone || "",
   });
 
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     setFormData({
       ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handlePasswordChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setPasswordData({
+      ...passwordData,
       [e.target.name]: e.target.value,
     });
   };
@@ -75,7 +97,6 @@ const Profile = () => {
         "/auth/edit-profile",
         {
           fullName: formData.fullName,
-          email: formData.email,
           phone: formData.phone,
         }
       );
@@ -105,6 +126,76 @@ const Profile = () => {
     }
   };
 
+  const handleChangePassword = async () => {
+    setPasswordMessage("");
+    setPasswordError("");
+
+    if (
+      !passwordData.currentPassword ||
+      !passwordData.newPassword ||
+      !passwordData.confirmPassword
+    ) {
+      setPasswordError("Please fill in all password fields.");
+      return;
+    }
+
+    if (passwordData.newPassword.length < 6) {
+      setPasswordError(
+        "New password must be at least 6 characters."
+      );
+      return;
+    }
+
+    if (
+      passwordData.newPassword !==
+      passwordData.confirmPassword
+    ) {
+      setPasswordError("New passwords do not match.");
+      return;
+    }
+
+    try {
+      setPasswordLoading(true);
+
+      const response = await api.put(
+        "/auth/change-password",
+        {
+          currentPassword: passwordData.currentPassword,
+          newPassword: passwordData.newPassword,
+          confirmPassword: passwordData.confirmPassword,
+        }
+      );
+
+      if (response.data) {
+        setPasswordMessage(
+          "Password changed successfully."
+        );
+
+        setPasswordData({
+          currentPassword: "",
+          newPassword: "",
+          confirmPassword: "",
+        });
+      }
+    } catch (error: any) {
+      if (error.response?.data?.message) {
+        const backendMessage = error.response.data.message;
+
+        setPasswordError(
+          Array.isArray(backendMessage)
+            ? backendMessage.join(", ")
+            : backendMessage
+        );
+      } else {
+        setPasswordError(
+          error.message || "Failed to change password"
+        );
+      }
+    } finally {
+      setPasswordLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-10 px-4">
       <div className="max-w-4xl mx-auto">
@@ -123,7 +214,6 @@ const Profile = () => {
 
           {/* Header */}
           <div className="bg-green-600 px-6 sm:px-10 py-10 text-white">
-
             <div className="flex flex-col sm:flex-row sm:items-center gap-5">
 
               {/* Avatar */}
@@ -218,7 +308,7 @@ const Profile = () => {
               <div className="border border-gray-100 rounded-xl p-5">
 
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="bg-green-100 text-green-600 p-2 rounded-lg">
+                  <div className="bg-gray-100 text-gray-500 p-2 rounded-lg">
                     <Mail size={20} />
                   </div>
 
@@ -227,19 +317,23 @@ const Profile = () => {
                   </span>
                 </div>
 
-                {isEditing ? (
+                <div className="relative">
                   <input
                     type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="w-full border border-gray-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-green-500"
+                    value={user?.email || ""}
+                    readOnly
+                    className="w-full bg-gray-100 border border-gray-200 rounded-lg px-3 py-2 pr-10 text-gray-500 cursor-not-allowed outline-none"
                   />
-                ) : (
-                  <p className="font-semibold text-gray-800 break-all">
-                    {user?.email || "Not available"}
-                  </p>
-                )}
+
+                  <Lock
+                    size={16}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+                  />
+                </div>
+
+                <p className="text-xs text-gray-400 mt-2">
+                  Email address cannot be changed.
+                </p>
 
               </div>
 
@@ -329,6 +423,116 @@ const Profile = () => {
 
               </div>
             )}
+
+            {/* Change Password */}
+            <div className="mt-10 pt-8 border-t">
+
+              <div className="flex items-center gap-3 mb-5">
+                <div className="bg-green-100 text-green-600 p-2 rounded-lg">
+                  <KeyRound size={20} />
+                </div>
+
+                <div>
+                  <h2 className="text-xl font-bold text-gray-800">
+                    Change Password
+                  </h2>
+
+                  <p className="text-sm text-gray-500">
+                    Update your password to keep your account secure.
+                  </p>
+                </div>
+              </div>
+
+              {/* Password Success */}
+              {passwordMessage && (
+                <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl mb-5 text-sm">
+                  {passwordMessage}
+                </div>
+              )}
+
+              {/* Password Error */}
+              {passwordError && (
+                <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl mb-5 text-sm">
+                  {passwordError}
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 gap-5">
+
+                {/* Current Password */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Current Password
+                  </label>
+
+                  <input
+                    type="password"
+                    name="currentPassword"
+                    value={passwordData.currentPassword}
+                    onChange={handlePasswordChange}
+                    placeholder="Enter your current password"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-500"
+                  />
+                </div>
+
+                {/* New Password */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    New Password
+                  </label>
+
+                  <input
+                    type="password"
+                    name="newPassword"
+                    value={passwordData.newPassword}
+                    onChange={handlePasswordChange}
+                    placeholder="Enter your new password"
+                    minLength={6}
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-500"
+                  />
+                </div>
+
+                {/* Confirm Password */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Confirm New Password
+                  </label>
+
+                  <input
+                    type="password"
+                    name="confirmPassword"
+                    value={passwordData.confirmPassword}
+                    onChange={handlePasswordChange}
+                    placeholder="Confirm your new password"
+                    minLength={6}
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-500"
+                  />
+                </div>
+
+              </div>
+
+              <button
+                onClick={handleChangePassword}
+                disabled={passwordLoading}
+                className="w-full sm:w-auto mt-5 inline-flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white font-medium px-6 py-3 rounded-xl transition"
+              >
+                {passwordLoading ? (
+                  <>
+                    <Loader2
+                      size={18}
+                      className="animate-spin"
+                    />
+                    Changing Password...
+                  </>
+                ) : (
+                  <>
+                    <KeyRound size={18} />
+                    Change Password
+                  </>
+                )}
+              </button>
+
+            </div>
 
             {/* Quick Actions */}
             <div className="mt-10 pt-8 border-t">

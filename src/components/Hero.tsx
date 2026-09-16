@@ -17,7 +17,7 @@ const Hero = () => {
           <div className="w-full min-w-0">
 
             {/* Trusted Badge */}
-            <div className="flex w-full items-center gap-2 bg-green-100 text-green-700 px-3 sm:px-4 py-2 rounded-2xl text-xs sm:text-sm font-medium mb-6">
+            {/* <div className="flex w-full items-center gap-2 bg-green-100 text-green-700 px-3 sm:px-4 py-2 rounded-2xl text-xs sm:text-sm font-medium mb-6">
               <ShieldCheck
                 size={18}
                 className="shrink-0"
@@ -26,7 +26,7 @@ const Hero = () => {
               <span className="min-w-0">
                 Your Trusted Online Pharmacy
               </span>
-            </div>
+            </div> */}
 
             {/* Heading */}
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
@@ -120,7 +120,9 @@ const Hero = () => {
               <div className="text-center text-white w-full">
 
                 <div className="text-6xl sm:text-8xl mb-5 sm:mb-6">
-                  💊
+                  <ShieldCheck
+                size={48}
+              />
                 </div>
 
                 <h2 className="text-2xl sm:text-3xl font-bold">

@@ -1,11 +1,20 @@
-
 import { useEffect, useState } from "react";
-import { CheckCircle, Loader2, XCircle } from "lucide-react";
-import { Link, useSearchParams } from "react-router-dom";
+import {
+  CheckCircle,
+  Loader2,
+  XCircle,
+} from "lucide-react";
+import {
+  Link,
+  useSearchParams,
+} from "react-router-dom";
 import api from "../api/axios";
+import { useCart } from "../context/cartContext";
 
 const PaymentCallback = () => {
   const [searchParams] = useSearchParams();
+
+  const { clearCart } = useCart();
 
   const [loading, setLoading] = useState(true);
   const [success, setSuccess] = useState(false);
@@ -22,7 +31,13 @@ const PaymentCallback = () => {
       }
 
       try {
-        await api.get(`/payment/verify/${reference}`);
+        await api.get(
+          `/payment/verify/${reference}`
+        );
+
+        // Clear the frontend cart after
+        // successful payment verification.
+        clearCart();
 
         setSuccess(true);
       } catch (error: any) {
@@ -36,7 +51,7 @@ const PaymentCallback = () => {
     };
 
     verifyPayment();
-  }, [searchParams]);
+  }, [searchParams, clearCart]);
 
   if (loading) {
     return (
@@ -73,8 +88,8 @@ const PaymentCallback = () => {
           </h1>
 
           <p className="text-gray-500 mt-3">
-            Your payment has been confirmed and your order
-            has been placed successfully.
+            Your payment has been confirmed and your
+            order has been placed successfully.
           </p>
 
           <div className="flex flex-col gap-3 mt-7">

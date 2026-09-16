@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 
 import {
@@ -8,6 +7,7 @@ import {
   Search,
   HeartPulse,
   Heart,
+  Package,
 } from "lucide-react";
 
 import {
@@ -164,6 +164,15 @@ const Navbar = () => {
                     className="text-green-600 hover:text-green-700 font-medium transition"
                   >
                     Hi, {user?.fullName}
+                  </Link>
+
+                  {/* Orders */}
+                  <Link
+                    to="/orders"
+                    className="flex items-center gap-2 border border-green-600 text-green-600 hover:bg-green-50 px-4 py-2 rounded-lg transition font-medium"
+                  >
+                    <Package size={18} />
+                    Orders
                   </Link>
 
                   {user?.role === "admin" && (
@@ -334,6 +343,7 @@ const Navbar = () => {
 
                   <div className="space-y-4">
 
+                    {/* Profile */}
                     <Link
                       to="/profile"
                       onClick={closeMenu}
@@ -352,6 +362,17 @@ const Navbar = () => {
                       </p>
                     </Link>
 
+                    {/* Orders */}
+                    <Link
+                      to="/orders"
+                      onClick={closeMenu}
+                      className="flex items-center justify-center gap-2 w-full border border-green-600 text-green-600 hover:bg-green-50 py-3 rounded-xl font-medium transition"
+                    >
+                      <Package size={19} />
+                      My Orders
+                    </Link>
+
+                    {/* Admin Dashboard */}
                     {user?.role === "admin" && (
                       <button
                         onClick={() => {
@@ -364,6 +385,7 @@ const Navbar = () => {
                       </button>
                     )}
 
+                    {/* Logout */}
                     <button
                       onClick={handleLogout}
                       className="w-full bg-red-500 hover:bg-red-600 text-white py-3 rounded-xl font-medium transition"

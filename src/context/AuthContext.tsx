@@ -1,3 +1,4 @@
+
 import {
   createContext,
   useContext,
@@ -22,9 +23,12 @@ interface AuthContextType {
   loading: boolean;
   login: (token: string) => Promise<boolean>;
   logout: () => Promise<void>;
+  updateUser: (updatedUser: Partial<User>) => void;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextType | undefined>(
+  undefined
+);
 
 export const AuthProvider = ({
   children,
@@ -89,6 +93,27 @@ export const AuthProvider = ({
     return await fetchProfile(token);
   };
 
+  // Update user information
+  const updateUser = (updatedUser: Partial<User>) => {
+    setUser((currentUser) => {
+      if (!currentUser) {
+        return currentUser;
+      }
+
+      const newUser = {
+        ...currentUser,
+        ...updatedUser,
+      };
+
+      localStorage.setItem(
+        "medicare-user",
+        JSON.stringify(newUser)
+      );
+
+      return newUser;
+    });
+  };
+
   // Logout
   const logout = async () => {
     const token = localStorage.getItem("medicare-token");
@@ -124,6 +149,7 @@ export const AuthProvider = ({
         loading,
         login,
         logout,
+        updateUser,
       }}
     >
       {children}

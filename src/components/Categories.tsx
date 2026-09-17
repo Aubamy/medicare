@@ -1,3 +1,4 @@
+
 import {
   Pill,
   HeartPulse,
@@ -44,15 +45,11 @@ const categories = [
 
 const Categories = () => {
   return (
-    <section
-      id="categories"
-      className="py-20 bg-gray-50"
-    >
+    <section id="categories" className="py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Section Heading */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
-
           <div>
             <p className="text-green-600 font-semibold mb-2">
               SHOP BY CATEGORY
@@ -63,8 +60,7 @@ const Categories = () => {
             </h2>
 
             <p className="text-gray-600 mt-3 max-w-2xl">
-              Explore our wide range of healthcare and wellness
-              products.
+              Explore our wide range of healthcare and wellness products.
             </p>
           </div>
 
@@ -76,24 +72,21 @@ const Categories = () => {
             View All
             <ArrowRight size={20} />
           </Link>
-
         </div>
 
         {/* Categories Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-5">
-
           {categories.map((category) => {
             const Icon = category.icon;
 
             return (
               <Link
                 key={category.name}
-                to={`/products?search=${encodeURIComponent(
+                to={`/products?category=${encodeURIComponent(
                   category.name
                 )}`}
                 className="bg-white rounded-2xl p-6 text-center shadow-sm hover:shadow-lg hover:-translate-y-2 transition duration-300 cursor-pointer group"
               >
-
                 {/* Icon */}
                 <div className="w-16 h-16 mx-auto mb-5 rounded-2xl bg-green-50 text-green-600 flex items-center justify-center group-hover:bg-green-600 group-hover:text-white transition">
                   <Icon size={30} />
@@ -114,13 +107,10 @@ const Categories = () => {
                   Browse
                   <ArrowRight size={15} />
                 </div>
-
               </Link>
             );
           })}
-
         </div>
-
       </div>
     </section>
   );

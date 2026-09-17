@@ -30,7 +30,7 @@ const AdminCustomers = () => {
 
       const response = await api.get("/admin/users");
 
-      setCustomers(response.data);
+      setCustomers(response.data.data || []);
     } catch (error: any) {
       setError(
         error?.response?.data?.message ||

@@ -1,4 +1,3 @@
-
 import {
   createContext,
   useContext,
@@ -47,9 +46,7 @@ export const AuthProvider = ({
         },
       });
 
-      const data = response.data;
-
-      const loggedInUser = data.user || data;
+      const loggedInUser = response.data.data;
 
       localStorage.setItem(
         "medicare-user",
@@ -60,8 +57,6 @@ export const AuthProvider = ({
 
       return true;
     } catch (error) {
-      console.error("Profile error:", error);
-
       localStorage.removeItem("medicare-token");
       localStorage.removeItem("medicare-logged-in");
       localStorage.removeItem("medicare-user");
@@ -131,7 +126,7 @@ export const AuthProvider = ({
         );
       }
     } catch (error) {
-      console.error("Logout error:", error);
+      // Continue clearing local authentication
     }
 
     localStorage.removeItem("medicare-token");
@@ -161,7 +156,9 @@ export const useAuth = () => {
   const context = useContext(AuthContext);
 
   if (!context) {
-    throw new Error("useAuth must be used inside AuthProvider");
+    throw new Error(
+      "useAuth must be used inside AuthProvider"
+    );
   }
 
   return context;

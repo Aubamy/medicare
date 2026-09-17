@@ -56,7 +56,7 @@ const AdminOrders = () => {
 
       const response = await api.get("/admin/orders");
 
-      setOrders(response.data);
+      setOrders(response.data.data || []);
     } catch (error: any) {
       setError(
         error?.response?.data?.message ||

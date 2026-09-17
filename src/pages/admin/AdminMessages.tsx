@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import {
   Mail,
@@ -39,7 +38,7 @@ const AdminMessages = () => {
 
       const response = await api.get("/contact");
 
-      setMessages(response.data);
+      setMessages(response.data.data || []);
     } catch (error: any) {
       setError(
         error?.response?.data?.message ||

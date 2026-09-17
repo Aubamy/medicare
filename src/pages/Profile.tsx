@@ -101,12 +101,16 @@ const Profile = () => {
         }
       );
 
-      if (response.data) {
-        updateUser(response.data.user);
+      const updatedUser = response.data.data.user;
 
-        setMessage("Profile updated successfully.");
-        setIsEditing(false);
-      }
+      updateUser(updatedUser);
+
+      setMessage(
+        response.data.message ||
+          "Profile updated successfully."
+      );
+
+      setIsEditing(false);
     } catch (error: any) {
       if (error.response?.data?.message) {
         const backendMessage = error.response.data.message;
@@ -166,17 +170,16 @@ const Profile = () => {
         }
       );
 
-      if (response.data) {
-        setPasswordMessage(
+      setPasswordMessage(
+        response.data.message ||
           "Password changed successfully."
-        );
+      );
 
-        setPasswordData({
-          currentPassword: "",
-          newPassword: "",
-          confirmPassword: "",
-        });
-      }
+      setPasswordData({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
     } catch (error: any) {
       if (error.response?.data?.message) {
         const backendMessage = error.response.data.message;

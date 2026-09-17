@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 
 interface Testimonial {
   id: number;
@@ -10,27 +13,35 @@ interface Testimonial {
   createdAt: string;
 }
 
-const API_URL = "https://medi-care-api-yyxr.onrender.com/api";
+const API_URL =
+  "https://medi-care-api-yyxr.onrender.com/api";
 
 const Testimonial = () => {
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [testimonials, setTestimonials] = useState<
+    Testimonial[]
+  >([]);
   const [current, setCurrent] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchTestimonials = async () => {
       try {
-        const response = await fetch(`${API_URL}/testimonials`);
+        const response = await fetch(
+          `${API_URL}/testimonials`
+        );
+
+        const responseData = await response.json();
 
         if (!response.ok) {
-          throw new Error("Failed to load testimonials");
+          throw new Error(
+            responseData.message ||
+              "Failed to load testimonials"
+          );
         }
 
-        const data = await response.json();
-
-        setTestimonials(data);
+        setTestimonials(responseData.data || []);
       } catch (error) {
-        console.error("Failed to fetch testimonials:", error);
+        setTestimonials([]);
       } finally {
         setLoading(false);
       }
@@ -40,12 +51,16 @@ const Testimonial = () => {
   }, []);
 
   const nextTestimonial = () => {
-    setCurrent((prev) => (prev + 1) % testimonials.length);
+    setCurrent(
+      (prev) => (prev + 1) % testimonials.length
+    );
   };
 
   const previousTestimonial = () => {
     setCurrent(
-      (prev) => (prev - 1 + testimonials.length) % testimonials.length
+      (prev) =>
+        (prev - 1 + testimonials.length) %
+        testimonials.length
     );
   };
 
@@ -53,7 +68,9 @@ const Testimonial = () => {
     return (
       <section className="py-16 px-6 bg-gray-50">
         <div className="max-w-4xl mx-auto text-center">
-          <p className="text-gray-500">Loading testimonials...</p>
+          <p className="text-gray-500">
+            Loading testimonials...
+          </p>
         </div>
       </section>
     );
@@ -96,7 +113,8 @@ const Testimonial = () => {
           </h2>
 
           <p className="text-gray-500 mt-4">
-            Hear from customers who have experienced MediCare.
+            Hear from customers who have experienced
+            MediCare.
           </p>
         </div>
 
@@ -105,18 +123,20 @@ const Testimonial = () => {
 
           {/* Stars */}
           <div className="flex justify-center gap-1 mb-6">
-            {Array.from({ length: 5 }).map((_, index) => (
-              <span
-                key={index}
-                className={
-                  index < testimonial.rating
-                    ? "text-yellow-400 text-2xl"
-                    : "text-gray-300 text-2xl"
-                }
-              >
-                ★
-              </span>
-            ))}
+            {Array.from({ length: 5 }).map(
+              (_, index) => (
+                <span
+                  key={index}
+                  className={
+                    index < testimonial.rating
+                      ? "text-yellow-400 text-2xl"
+                      : "text-gray-300 text-2xl"
+                  }
+                >
+                  ★
+                </span>
+              )
+            )}
           </div>
 
           {/* Message */}
@@ -128,7 +148,9 @@ const Testimonial = () => {
           <div className="flex flex-col items-center mt-8">
             <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center">
               <span className="text-green-700 font-bold text-2xl">
-                {testimonial.name.charAt(0).toUpperCase()}
+                {testimonial.name
+                  .charAt(0)
+                  .toUpperCase()}
               </span>
             </div>
 

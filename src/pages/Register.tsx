@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -55,9 +54,10 @@ const Register = () => {
         confirmPassword: formData.confirmPassword,
       });
 
-      if (response.data) {
+      if (response.data.status === "success") {
         setSuccess(
-          "Account created successfully! You can now login to your account."
+          response.data.message ||
+            "Account created successfully! You can now login to your account."
         );
 
         setFormData({
@@ -158,7 +158,6 @@ const Register = () => {
                 onSubmit={handleSubmit}
                 className="space-y-5"
               >
-
                 {/* Full Name */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -172,6 +171,7 @@ const Register = () => {
                     onChange={handleChange}
                     placeholder="Enter your full name"
                     required
+                    autoComplete="name"
                     className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-500"
                   />
                 </div>
@@ -189,6 +189,7 @@ const Register = () => {
                     onChange={handleChange}
                     placeholder="Enter your email"
                     required
+                    autoComplete="email"
                     className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-500"
                   />
                 </div>
@@ -206,6 +207,7 @@ const Register = () => {
                     onChange={handleChange}
                     placeholder="08012345678"
                     required
+                    autoComplete="tel"
                     className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-500"
                   />
                 </div>
@@ -224,6 +226,7 @@ const Register = () => {
                     placeholder="Create a password"
                     required
                     minLength={6}
+                    autoComplete="new-password"
                     className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-500"
                   />
                 </div>
@@ -242,6 +245,7 @@ const Register = () => {
                     placeholder="Confirm your password"
                     required
                     minLength={6}
+                    autoComplete="new-password"
                     className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-green-500"
                   />
                 </div>
@@ -264,7 +268,6 @@ const Register = () => {
                     "Create Account"
                   )}
                 </button>
-
               </form>
 
               {/* Login */}
@@ -291,7 +294,6 @@ const Register = () => {
               </Link>
             </div>
           )}
-
         </div>
       </div>
     </div>

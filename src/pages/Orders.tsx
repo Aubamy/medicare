@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import {
   Package,
@@ -59,15 +58,15 @@ const Orders = () => {
           },
         });
 
-        const data = await response.json();
+        const responseData = await response.json();
 
         if (!response.ok) {
           throw new Error(
-            data.message || "Failed to load orders"
+            responseData.message || "Failed to load orders"
           );
         }
 
-        setOrders(data);
+        setOrders(responseData.data?.orders || []);
       } catch (error) {
         setError(
           error instanceof Error
@@ -128,227 +127,226 @@ const Orders = () => {
   return (
     <>
       <Navbar />
+
       <div className="min-h-screen bg-gray-50 py-10 px-4">
-      <div className="max-w-5xl mx-auto">
+        <div className="max-w-5xl mx-auto">
 
-        {/* Header */}
-        <div className="mb-8">
-          <Link
-            to="/"
-            className="text-gray-500 hover:text-green-600 transition text-sm"
-          >
-            ← Back to Home
-          </Link>
-
-          <div className="flex items-center gap-3 mt-5">
-            <div className="bg-green-100 text-green-600 p-3 rounded-xl">
-              <ShoppingBag size={26} />
-            </div>
-
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
-                My Orders
-              </h1>
-
-              <p className="text-gray-500 mt-1">
-                Track and manage your pharmacy orders
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Loading */}
-        {loading && (
-          <div className="flex justify-center py-20">
-            <Loader2
-              size={35}
-              className="animate-spin text-green-600"
-            />
-          </div>
-        )}
-
-        {/* Error */}
-        {!loading && error && (
-          <div className="bg-red-50 border border-red-200 text-red-600 rounded-xl p-5">
-            {error}
-          </div>
-        )}
-
-        {/* Empty Orders */}
-        {!loading && !error && orders.length === 0 && (
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-10 text-center">
-            <Package
-              size={50}
-              className="mx-auto text-gray-300"
-            />
-
-            <h2 className="text-xl font-bold text-gray-800 mt-4">
-              No Orders Yet
-            </h2>
-
-            <p className="text-gray-500 mt-2">
-              You haven't placed any orders yet.
-            </p>
-
+          {/* Header */}
+          <div className="mb-8">
             <Link
-              to="/products"
-              className="inline-flex mt-6 bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-medium transition"
+              to="/"
+              className="text-gray-500 hover:text-green-600 transition text-sm"
             >
-              Start Shopping
+              ← Back to Home
             </Link>
+
+            <div className="flex items-center gap-3 mt-5">
+              <div className="bg-green-100 text-green-600 p-3 rounded-xl">
+                <ShoppingBag size={26} />
+              </div>
+
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
+                  My Orders
+                </h1>
+
+                <p className="text-gray-500 mt-1">
+                  Track and manage your pharmacy orders
+                </p>
+              </div>
+            </div>
           </div>
-        )}
 
-        {/* Orders */}
-        {!loading && !error && orders.length > 0 && (
-          <div className="space-y-5">
+          {/* Loading */}
+          {loading && (
+            <div className="flex justify-center py-20">
+              <Loader2
+                size={35}
+                className="animate-spin text-green-600"
+              />
+            </div>
+          )}
 
-            {orders.map((order) => {
+          {/* Error */}
+          {!loading && error && (
+            <div className="bg-red-50 border border-red-200 text-red-600 rounded-xl p-5">
+              {error}
+            </div>
+          )}
 
-              const totalItems =
-                order.items?.reduce(
-                  (total, item) =>
-                    total + Number(item.quantity),
-                  0
-                ) || 0;
+          {/* Empty Orders */}
+          {!loading && !error && orders.length === 0 && (
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-10 text-center">
+              <Package
+                size={50}
+                className="mx-auto text-gray-300"
+              />
 
-              return (
-                <div
-                  key={order.id}
-                  className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 sm:p-6"
-                >
+              <h2 className="text-xl font-bold text-gray-800 mt-4">
+                No Orders Yet
+              </h2>
 
-                  {/* Top */}
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <p className="text-gray-500 mt-2">
+                You haven't placed any orders yet.
+              </p>
 
-                    <div>
-                      <p className="text-sm text-gray-500">
-                        Order ID
-                      </p>
+              <Link
+                to="/products"
+                className="inline-flex mt-6 bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-medium transition"
+              >
+                Start Shopping
+              </Link>
+            </div>
+          )}
 
-                      <h2 className="font-bold text-gray-800 text-lg">
-                        #{order.id}
-                      </h2>
+          {/* Orders */}
+          {!loading && !error && orders.length > 0 && (
+            <div className="space-y-5">
+              {orders.map((order) => {
+                const totalItems =
+                  order.items?.reduce(
+                    (total, item) =>
+                      total + Number(item.quantity),
+                    0
+                  ) || 0;
+
+                return (
+                  <div
+                    key={order.id}
+                    className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 sm:p-6"
+                  >
+
+                    {/* Top */}
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+
+                      <div>
+                        <p className="text-sm text-gray-500">
+                          Order ID
+                        </p>
+
+                        <h2 className="font-bold text-gray-800 text-lg">
+                          #{order.id}
+                        </h2>
+                      </div>
+
+                      {/* Status */}
+                      <div
+                        className={`inline-flex items-center gap-2 w-fit px-3 py-2 rounded-full text-sm font-medium capitalize ${getStatusStyle(
+                          order.status
+                        )}`}
+                      >
+                        {getStatusIcon(order.status)}
+                        {order.status}
+                      </div>
+
                     </div>
 
-                    {/* Status */}
-                    <div
-                      className={`inline-flex items-center gap-2 w-fit px-3 py-2 rounded-full text-sm font-medium capitalize ${getStatusStyle(
-                        order.status
-                      )}`}
-                    >
-                      {getStatusIcon(order.status)}
-                      {order.status}
-                    </div>
+                    {/* Products */}
+                    {order.items?.length > 0 && (
+                      <div className="mt-6 pt-5 border-t space-y-3">
 
-                  </div>
+                        {order.items.map((item) => (
+                          <div
+                            key={item.id}
+                            className="flex items-center gap-4"
+                          >
+                            <img
+                              src={item.product?.image}
+                              alt={item.product?.productName}
+                              className="w-14 h-14 rounded-xl object-cover border border-gray-100"
+                            />
 
-                  {/* Products */}
-                  {order.items?.length > 0 && (
-                    <div className="mt-6 pt-5 border-t space-y-3">
+                            <div className="flex-1">
+                              <p className="font-semibold text-gray-800">
+                                {item.product?.productName ||
+                                  "Product"}
+                              </p>
 
-                      {order.items.map((item) => (
-                        <div
-                          key={item.id}
-                          className="flex items-center gap-4"
-                        >
-                          <img
-                            src={item.product?.image}
-                            alt={item.product?.productName}
-                            className="w-14 h-14 rounded-xl object-cover border border-gray-100"
-                          />
+                              <p className="text-sm text-gray-500 mt-1">
+                                Quantity: {item.quantity}
+                              </p>
+                            </div>
 
-                          <div className="flex-1">
                             <p className="font-semibold text-gray-800">
-                              {item.product?.productName ||
-                                "Product"}
-                            </p>
-
-                            <p className="text-sm text-gray-500 mt-1">
-                              Quantity: {item.quantity}
+                              ₦
+                              {Number(
+                                item.price
+                              ).toLocaleString()}
                             </p>
                           </div>
+                        ))}
 
-                          <p className="font-semibold text-gray-800">
-                            ₦
-                            {Number(item.price).toLocaleString()}
-                          </p>
-                        </div>
-                      ))}
+                      </div>
+                    )}
 
-                    </div>
-                  )}
+                    {/* Details */}
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-5 mt-6 pt-5 border-t">
 
-                  {/* Details */}
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-5 mt-6 pt-5 border-t">
+                      <div>
+                        <p className="text-sm text-gray-500">
+                          Order Date
+                        </p>
 
-                    <div>
-                      <p className="text-sm text-gray-500">
-                        Order Date
-                      </p>
+                        <p className="font-medium text-gray-800 mt-1">
+                          {new Date(
+                            order.createdAt
+                          ).toLocaleDateString()}
+                        </p>
+                      </div>
 
-                      <p className="font-medium text-gray-800 mt-1">
-                        {new Date(
-                          order.createdAt
-                        ).toLocaleDateString()}
-                      </p>
-                    </div>
+                      <div>
+                        <p className="text-sm text-gray-500">
+                          Items
+                        </p>
 
-                    <div>
-                      <p className="text-sm text-gray-500">
-                        Items
-                      </p>
+                        <p className="font-medium text-gray-800 mt-1">
+                          {totalItems}{" "}
+                          {totalItems === 1
+                            ? "item"
+                            : "items"}
+                        </p>
+                      </div>
 
-                      <p className="font-medium text-gray-800 mt-1">
-                        {totalItems}{" "}
-                        {totalItems === 1
-                          ? "item"
-                          : "items"}
-                      </p>
-                    </div>
+                      <div>
+                        <p className="text-sm text-gray-500">
+                          Total
+                        </p>
 
-                    <div>
-                      <p className="text-sm text-gray-500">
-                        Total
-                      </p>
+                        <p className="font-bold text-green-600 mt-1">
+                          ₦
+                          {Number(
+                            order.totalAmount
+                          ).toLocaleString()}
+                        </p>
+                      </div>
 
-                      <p className="font-bold text-green-600 mt-1">
-                        ₦
-                        {Number(
-                          order.totalAmount
-                        ).toLocaleString()}
-                      </p>
                     </div>
 
                   </div>
+                );
+              })}
+            </div>
+          )}
 
-                </div>
-              );
-            })}
+          {/* Continue Shopping */}
+          {!loading && (
+            <div className="text-center mt-10">
+              <Link
+                to="/products"
+                className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-medium px-6 py-3 rounded-xl transition"
+              >
+                <ShoppingBag size={19} />
+                Continue Shopping
+              </Link>
+            </div>
+          )}
 
-          </div>
-        )}
-
-        {/* Continue Shopping */}
-        {!loading && (
-          <div className="text-center mt-10">
-            <Link
-              to="/products"
-              className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-medium px-6 py-3 rounded-xl transition"
-            >
-              <ShoppingBag size={19} />
-              Continue Shopping
-            </Link>
-          </div>
-        )}
-
+        </div>
       </div>
-    </div>
 
-    <Footer />
+      <Footer />
     </>
   );
 };
 
 export default Orders;
-

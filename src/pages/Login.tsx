@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -39,12 +38,17 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const response = await api.post("/auth/login", formData);
+      const response = await api.post(
+        "/auth/login",
+        formData
+      );
 
-      const { token } = response.data;
+      const { token } = response.data.data;
 
       if (!token) {
-        throw new Error("Login token was not returned");
+        throw new Error(
+          "Login token was not returned"
+        );
       }
 
       const success = await login(token);
@@ -122,7 +126,6 @@ const Login = () => {
             onSubmit={handleSubmit}
             className="space-y-5"
           >
-
             {/* Email */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -178,7 +181,6 @@ const Login = () => {
                 "Login"
               )}
             </button>
-
           </form>
 
           {/* Register */}
@@ -191,7 +193,6 @@ const Login = () => {
               Create Account
             </Link>
           </p>
-
         </div>
       </div>
     </div>

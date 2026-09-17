@@ -36,16 +36,18 @@ const Testimonial = () => {
         }),
       });
 
-      const data = await response.json();
+      const responseData = await response.json();
 
       if (!response.ok) {
         throw new Error(
-          data.message || "Failed to submit testimonial"
+          responseData.message ||
+            "Failed to submit testimonial"
         );
       }
 
       setSuccess(
-        "Thank you! Your testimonial has been submitted and is awaiting approval."
+        responseData.message ||
+          "Thank you! Your testimonial has been submitted and is awaiting approval."
       );
 
       setMessage("");

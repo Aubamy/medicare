@@ -1,4 +1,3 @@
-
 import {
   createContext,
   useContext,
@@ -68,15 +67,18 @@ export const CartProvider = ({
 
       const response = await api.get("/cart");
 
-      const data = response.data;
+      const data = response.data.data;
 
+      // Backend returns an array when cart has items
+      // and { cartItems: [] } when the cart is empty.
       if (Array.isArray(data)) {
         setCart(data.map(formatCartItem));
+      } else if (Array.isArray(data?.cartItems)) {
+        setCart(data.cartItems.map(formatCartItem));
       } else {
         setCart([]);
       }
     } catch (error) {
-      console.error("Failed to load cart:", error);
       setCart([]);
     } finally {
       setLoading(false);
@@ -99,7 +101,6 @@ export const CartProvider = ({
 
       await fetchCart();
     } catch (error) {
-      console.error("Failed to add product to cart:", error);
       throw error;
     } finally {
       setLoading(false);
@@ -117,7 +118,6 @@ export const CartProvider = ({
         currentCart.filter((item) => item.id !== productId)
       );
     } catch (error) {
-      console.error("Failed to remove product from cart:", error);
       throw error;
     } finally {
       setLoading(false);
@@ -150,7 +150,6 @@ export const CartProvider = ({
         )
       );
     } catch (error) {
-      console.error("Failed to increase quantity:", error);
       throw error;
     }
   };
@@ -186,7 +185,6 @@ export const CartProvider = ({
         )
       );
     } catch (error) {
-      console.error("Failed to decrease quantity:", error);
       throw error;
     }
   };

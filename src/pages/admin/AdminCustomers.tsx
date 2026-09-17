@@ -170,9 +170,9 @@ const AdminCustomers = () => {
                             {customer.fullName}
                           </p>
 
-                          <p className="text-xs text-gray-400 mt-1">
+                          {/* <p className="text-xs text-gray-400 mt-1">
                             ID: #{customer.id}
-                          </p>
+                          </p> */}
                         </div>
 
                       </div>

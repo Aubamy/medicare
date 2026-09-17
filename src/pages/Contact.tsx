@@ -169,7 +169,7 @@ const Contact = () => {
 
               {submitted && (
                 <div className="mt-6 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl">
-                  Message submitted successfully! 🎉
+                  Message submitted successfully! 
                 </div>
               )}
 

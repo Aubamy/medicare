@@ -1,4 +1,3 @@
-
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -54,11 +53,11 @@ const AdminLayout = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-100 flex">
+    <div className="h-screen bg-gray-100 flex overflow-hidden">
       {/* Sidebar */}
-      <aside className="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col">
+      <aside className="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col h-screen shrink-0">
         {/* Logo */}
-        <div className="h-20 flex items-center px-6 border-b border-gray-100">
+        <div className="h-20 flex items-center px-6 border-b border-gray-100 shrink-0">
           <div className="bg-green-600 text-white p-2 rounded-lg">
             <HeartPulse size={22} />
           </div>
@@ -69,7 +68,7 @@ const AdminLayout = () => {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 p-4 space-y-2">
+        <nav className="flex-1 min-h-0 overflow-y-auto p-4 space-y-2">
           {links.map((link) => {
             const Icon = link.icon;
 
@@ -93,7 +92,7 @@ const AdminLayout = () => {
         </nav>
 
         {/* Admin Info + Logout */}
-        <div className="border-t border-gray-100 p-4">
+        <div className="border-t border-gray-100 p-4 shrink-0 bg-white">
           <div className="px-3 mb-4">
             <p className="text-sm font-semibold text-gray-800">
               {user?.fullName}
@@ -119,7 +118,7 @@ const AdminLayout = () => {
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1 min-w-0">
+      <div className="flex-1 min-w-0 h-screen overflow-y-auto">
         {/* Mobile Header */}
         <header className="md:hidden bg-white border-b border-gray-200 px-5 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">

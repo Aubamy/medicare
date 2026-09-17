@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import {
   Users,
@@ -80,7 +79,7 @@ const AdminDashboard = () => {
 
       // Products
       const productData =
-        productsResponse.data.data || [];
+        productsResponse.data.data?.products || [];
 
       setProducts(productData.slice(0, 5));
 

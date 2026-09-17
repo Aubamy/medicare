@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import {
   Package,
@@ -15,21 +16,21 @@ import Footer from "../components/Footer";
 interface Product {
   id: number;
   productName: string;
-  price: number;
-  image: string;
+  price: number | string;
+  image: string | null;
 }
 
 interface OrderItem {
   id: number;
   productId: number;
   quantity: number;
-  price: number;
+  price: number | string;
   product: Product;
 }
 
 interface Order {
   id: number;
-  totalAmount: number;
+  totalAmount: number | string;
   paymentReference: string | null;
   status: string;
   createdAt: string;
@@ -66,7 +67,8 @@ const Orders = () => {
           );
         }
 
-        setOrders(responseData.data?.orders || []);
+        // The API returns the orders directly inside data
+        setOrders(responseData.data || []);
       } catch (error) {
         setError(
           error instanceof Error
@@ -215,10 +217,8 @@ const Orders = () => {
                     key={order.id}
                     className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 sm:p-6"
                   >
-
                     {/* Top */}
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-
                       <div>
                         <p className="text-sm text-gray-500">
                           Order ID
@@ -238,21 +238,22 @@ const Orders = () => {
                         {getStatusIcon(order.status)}
                         {order.status}
                       </div>
-
                     </div>
 
                     {/* Products */}
                     {order.items?.length > 0 && (
                       <div className="mt-6 pt-5 border-t space-y-3">
-
                         {order.items.map((item) => (
                           <div
                             key={item.id}
                             className="flex items-center gap-4"
                           >
                             <img
-                              src={item.product?.image}
-                              alt={item.product?.productName}
+                              src={item.product?.image || ""}
+                              alt={
+                                item.product?.productName ||
+                                "Product"
+                              }
                               className="w-14 h-14 rounded-xl object-cover border border-gray-100"
                             />
 
@@ -275,13 +276,11 @@ const Orders = () => {
                             </p>
                           </div>
                         ))}
-
                       </div>
                     )}
 
                     {/* Details */}
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-5 mt-6 pt-5 border-t">
-
                       <div>
                         <p className="text-sm text-gray-500">
                           Order Date
@@ -319,9 +318,7 @@ const Orders = () => {
                           ).toLocaleString()}
                         </p>
                       </div>
-
                     </div>
-
                   </div>
                 );
               })}
@@ -340,7 +337,6 @@ const Orders = () => {
               </Link>
             </div>
           )}
-
         </div>
       </div>
 

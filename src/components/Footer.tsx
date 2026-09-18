@@ -211,12 +211,12 @@ const Footer = () => {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
 
             <p className="text-sm text-gray-500">
-              © {new Date().getFullYear()} MediCare Pharmacy.
+              &copy; {new Date().getFullYear()} MediCare Pharmacy.
               All rights reserved.
             </p>
 
             <p className="text-sm text-gray-500">
-              Your health is our priority 💚
+              Your health is our priority  <HeartPulse className="text-white flex inline-block p-1 rounded-lg bg-green-600" size={22} />
             </p>
 
           </div>

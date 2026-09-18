@@ -26,6 +26,7 @@ interface Product {
   quantity: number;
   category: string;
   image?: string;
+  createdAt?: string;
 }
 
 interface Order {
@@ -78,10 +79,34 @@ const AdminDashboard = () => {
       setStats(dashboardResponse.data.data);
 
       // Products
-      const productData =
-        productsResponse.data.data?.products || [];
+      // Support both { data: { products: [] } } and { data: [] } responses.
+      const productsPayload = productsResponse.data?.data;
 
-      setProducts(productData.slice(0, 5));
+      const productData: Product[] = Array.isArray(productsPayload)
+        ? productsPayload
+        : productsPayload?.products || [];
+
+      // Display the newest products first.
+      // Fall back to the product ID if createdAt is unavailable.
+      const recentProducts = [...productData]
+        .sort((a, b) => {
+          const dateA = a.createdAt
+            ? new Date(a.createdAt).getTime()
+            : 0;
+
+          const dateB = b.createdAt
+            ? new Date(b.createdAt).getTime()
+            : 0;
+
+          if (dateA && dateB) {
+            return dateB - dateA;
+          }
+
+          return Number(b.id) - Number(a.id);
+        })
+        .slice(0, 5);
+
+      setProducts(recentProducts);
 
       // Orders
       const orderData =
